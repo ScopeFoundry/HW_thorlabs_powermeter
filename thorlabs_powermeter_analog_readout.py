@@ -1,6 +1,6 @@
 from ScopeFoundry import HardwareComponent
 try:
-    from equipment.NI_Daq import Adc
+    from equipment.NI_Daq import NI_AdcTask
 except Exception as err:
     print "Cannot load required modules for Thorlabs Power meter analog readout:", err
 
@@ -27,7 +27,7 @@ class ThorlabsPowerMeterAnalogReadOut(HardwareComponent):
         
         
         # Open connection to hardware                        
-        self.adc = Adc(channel='/Dev1/ai2', range=10, name=self.name, terminalConfig='rse')
+        self.adc = NI_AdcTask(channel='/Dev1/ai2', range=10, name=self.name, terminalConfig='rse')
         self.adc.set_single()
         self.adc.start()
 

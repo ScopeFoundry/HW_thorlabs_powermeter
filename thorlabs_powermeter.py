@@ -74,15 +74,16 @@ class ThorlabsPowerMeterHW(HardwareComponent):
 
     def disconnect(self):
         #disconnect logged quantities from hardware
-        for lq in self.logged_quantities.values():
+        for lq in self.settings.as_list():
             lq.hardware_read_func = None
             lq.hardware_set_func = None
         
-        #disconnect hardware
-        self.power_meter.close()
-        
-        # clean up hardware object
-        del self.power_meter
+        if hasattr(self, 'power_meter'):
+            #disconnect hardware
+            self.power_meter.close()
+            
+            # clean up hardware object
+            del self.power_meter
 
     def run_zero(self):
         self.power_meter.run_zero()

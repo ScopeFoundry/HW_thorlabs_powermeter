@@ -12,13 +12,13 @@ from ScopeFoundry.helper_funcs import sibling_path, replace_widget_in_layout
 from ScopeFoundry import h5_io
 
 
-class PowerMeterOptimizerMeasurement(Measurement):
+class PowerMeterOptimizerMeasure(Measurement):
 
     name = "powermeter_optimizer"
     
     def __init__(self, app):
         self.ui_filename = sibling_path(__file__, "powermeter_optimizer.ui")
-        super(PowerMeterOptimizerMeasurement, self).__init__(app)    
+        super(PowerMeterOptimizerMeasure, self).__init__(app)    
 
     def setup(self):        
         self.display_update_period = 0.1 #seconds

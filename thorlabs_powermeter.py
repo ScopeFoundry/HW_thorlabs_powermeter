@@ -1,10 +1,11 @@
+from __future__ import division, absolute_import, print_function
 from ScopeFoundry import HardwareComponent
 try:
-    from equipment.thorlabs_pm100d import ThorlabsPM100D
+    from .thorlabs_pm100d import ThorlabsPM100D
 except Exception as err:
-    print "Cannot load required modules for Thorlabs Power meter:", err
+    print("Cannot load required modules for Thorlabs Power meter: {}".format( err))
 
-class ThorlabsPowerMeter(HardwareComponent):
+class ThorlabsPowerMeterHW(HardwareComponent):
     
     def setup(self):
         self.name = 'thorlabs_powermeter'
@@ -43,7 +44,7 @@ class ThorlabsPowerMeter(HardwareComponent):
         self.add_operation("run_zero", self.run_zero)
         
     def connect(self):
-        if self.debug_mode.val: print "connecting to", self.name
+        if self.debug_mode.val: self.log.debug( "connecting to" +  self.name)
         
         # Open connection to hardware                        
         self.power_meter = ThorlabsPM100D(debug=self.debug_mode.val, port=self.port.val)

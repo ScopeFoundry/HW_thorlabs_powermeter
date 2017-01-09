@@ -3,7 +3,7 @@ Created on Oct 27, 2016
 
 @author: Edward Barnard
 '''
-
+from __future__ import absolute_import, division, print_function
 from ScopeFoundry import Measurement
 import numpy as np
 import pyqtgraph as pg
@@ -18,7 +18,6 @@ class PowerMeterOptimizerMeasurement(Measurement):
     
     def __init__(self, app):
         self.ui_filename = sibling_path(__file__, "powermeter_optimizer.ui")
-        print(self.ui_filename)
         super(PowerMeterOptimizerMeasurement, self).__init__(app)    
 
     def setup(self):        

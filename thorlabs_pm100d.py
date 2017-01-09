@@ -1,8 +1,13 @@
+from __future__ import division, print_function
 import visa
 import time
+import logging
 
 TRIES_BEFORE_FAILURE = 10
 RETRY_SLEEP_TIME = 0.010  # in seconds
+
+logger = logging.getLogger(__name__)
+
 
 class ThorlabsPM100D(object):
     """
@@ -50,31 +55,31 @@ class ThorlabsPM100D(object):
         
     
     def ask(self, cmd):
-        if self.debug: print "PM100D ask ", repr(cmd)
+        if self.debug: logger.debug( "PM100D ask " + repr(cmd) )
         resp = self.pm.ask(cmd)
-        if self.debug: print "PM100D resp --->", repr(resp)
+        if self.debug: logger.debug( "PM100D resp ---> " + repr(resp) )
         return resp
     
     def write(self, cmd):
-        if self.debug: print "PM100D write", repr(cmd)
+        if self.debug: logger.debug( "PM100D write" + repr(cmd) )
         resp = self.pm.write(cmd)
-        if self.debug: print "PM100D written --->", repr(resp)
+        if self.debug: logger.debug( "PM100D written --->" + repr(resp))
         
     def get_wavelength(self):
         try_count = 0
         while True:
             try:
                 self.wl = float(self.ask("SENS:CORR:WAV?"))
-                if self.debug: print "wl:", repr(self.wl)
+                if self.debug: logger.debug( "wl:" + repr(self.wl) )
                 break
             except:
                 if try_count > 9:
-                    print "Failed to get wavelength."
+                    logger.warning( "Failed to get wavelength." )
                     break
                 else:
                     time.sleep(RETRY_SLEEP_TIME)  #take a rest..
                     try_count = try_count + 1
-                    print "trying to get the wavelength again.."
+                    logger.debug( "trying to get the wavelength again.." )
         return self.wl
     
     def set_wavelength(self, wl):
@@ -86,20 +91,20 @@ class ThorlabsPM100D(object):
                 break
             except:
                 if try_count > 9:
-                    print "Failed to set wavelength."
+                    logger.warning( "Failed to set wavelength." )
                     time.sleep(0.005) # Sleep for 5 ms before rereading the wl.
                     break
                 else:
                     time.sleep(RETRY_SLEEP_TIME)  #take a rest..
                     try_count = try_count + 1
-                    print "trying to set wavelength again.."
+                    logger.warning( "trying to set wavelength again.." )
 
         return self.get_wavelength()
     
     def get_attenuation_dB(self):
         # in dB (range for 60db to -60db) gain or attenuation, default 0 dB
         self.attenuation_dB = float( self.ask("SENS:CORR:LOSS:INP:MAGN?") )
-        if self.debug: print "attenuation_dB", self.attenuation_dB
+        if self.debug: logger.debug( "attenuation_dB " + repr(self.attenuation_dB))
         return self.attenuation_dB
 
     
@@ -108,7 +113,7 @@ class ThorlabsPM100D(object):
         returns the number of measurements
         the result is averaged over"""
         self.average_count = int( self.ask("SENS:AVER:COUNt?") )
-        if self.debug: print "average count:", self.average_count
+        if self.debug: logger.debug( "average count:" +  repr(self.average_count))
         return self.average_count
     
     def set_average_count(self, cnt):
@@ -121,13 +126,13 @@ class ThorlabsPM100D(object):
     
     def measure_power(self):
         self.power = float(self.ask("MEAS:POW?"))
-        if self.debug: print "power:", self.power
+        if self.debug: logger.debug( "power: " + repr( self.power))
         return self.power
         
     def get_power_range(self):
         #un tested
         self.power_range = self.ask("SENS:POW:RANG:UPP?") # CHECK RANGE
-        if self.debug: print "power_range", self.power_range
+        if self.debug: logger.debug( "power_range " + repr( self.power_range ))
         return self.power_range
 
 
@@ -140,12 +145,12 @@ class ThorlabsPM100D(object):
     def get_auto_range(self):
         resp = self.ask("SENS:POW:RANG:AUTO?")
         if True:
-            print repr(resp)
+            logger.debug( 'get_auto_range ' + repr(resp) )
         self.auto_range = bool(int(resp))
         return self.auto_range
     
     def set_auto_range(self, auto = True):
-        print "set_auto_range", auto
+        logger.debug( "set_auto_range " + repr( auto))
         if auto:
             self.write("SENS:POW:RANG:AUTO ON") # turn on auto range
         else:
@@ -154,24 +159,24 @@ class ThorlabsPM100D(object):
     
     def measure_frequency(self):
         self.frequency = self.ask("MEAS:FREQ?")
-        if self.debug: print "frequency", self.frequency
+        if self.debug: logger.debug( "frequency " + repr( self.frequency))
         return self.frequency
 
 
     def get_zero_magnitude(self):
         resp = self.ask("SENS:CORR:COLL:ZERO:MAGN?")
         if self.debug:
-            print "zero_magnitude", repr(resp)
+            logger.debug( "zero_magnitude " + repr(resp) )
         self.zero_magnitude = float(resp)
         return self.zero_magnitude
         
     def get_zero_state(self): 
         resp = self.ask("SENS:CORR:COLL:ZERO:STAT?")
         if self.debug:
-            print "zero_state", repr(resp)
+            logger.debug( "zero_state" + repr(resp))
         self.zero_state = bool(int(resp))
         if self.debug:
-            print "zero_state", repr(resp), '-->', self.zero_state
+            logger.debug( "zero_state" + repr(resp) + '--> ' + repr(self.zero_state))
         return self.zero_state
     
     def run_zero(self):
@@ -183,7 +188,7 @@ class ThorlabsPM100D(object):
         #resp = self.ask("SENS:CORR:VOLT:RANG?")
         #resp = self.ask("SENS:CURR:RANG?")
         if self.debug:
-            print "photodiode_response (A/W)", repr(resp)
+            logger.debug( "photodiode_response (A/W)" + repr(resp) )
         
         self.photodiode_response = float(resp) # A/W
         return self.photodiode_response 
@@ -191,14 +196,14 @@ class ThorlabsPM100D(object):
     def measure_current(self):
         resp = self.ask("MEAS:CURR?")
         if self.debug:
-            print "measure_current", repr(resp)
+            logger.debug( "measure_current " + repr(resp))
         self.current = float(resp)
         return self.current
     
     def get_current_range(self):
         resp = self.ask("SENS:CURR:RANG:UPP?")
         if self.debug:
-            print "current_range (A)", repr(resp)
+            logger.debug( "current_range (A)" + repr(resp))
         self.current_range = float(resp)
         return self.current_range
         

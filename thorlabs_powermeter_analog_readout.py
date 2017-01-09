@@ -1,8 +1,9 @@
+from __future__ import division, absolute_import, print_function
 from ScopeFoundry import HardwareComponent
 try:
-    from equipment.NI_Daq import NI_AdcTask
+    from ScopeFoundryHW.ni_daq import NI_AdcTask
 except Exception as err:
-    print "Cannot load required modules for Thorlabs Power meter analog readout:", err
+    print ("Cannot load required modules for Thorlabs Power meter analog readout: {}".format( err))
 
 class ThorlabsPowerMeterAnalogReadOut(HardwareComponent):
     
@@ -23,7 +24,7 @@ class ThorlabsPowerMeterAnalogReadOut(HardwareComponent):
                                                     vmin=0, vmax = 10, ro=True)
 
     def connect(self):
-        if self.debug_mode.val: print "connecting to {}".format(self.name)
+        if self.debug_mode.val: self.log.debug("connecting to {}".format(self.name))
         
         
         # Open connection to hardware                        
@@ -32,8 +33,7 @@ class ThorlabsPowerMeterAnalogReadOut(HardwareComponent):
         self.adc.start()
 
         #Connect lq to hardware
-        self.voltage.hardware_read_func = \
-            self.read_adc_single
+        self.voltage.hardware_read_func = self.read_adc_single
             
         
 
@@ -52,5 +52,5 @@ class ThorlabsPowerMeterAnalogReadOut(HardwareComponent):
     def read_adc_single(self):
         resp = self.adc.get()
         if self.debug_mode.val:
-            print "read_adc_single", resp
+            self.log.debug( "read_adc_single resp: {}".format( resp))
         return float(resp[0])

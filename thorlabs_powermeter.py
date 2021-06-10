@@ -44,7 +44,8 @@ class ThorlabsPowerMeterHW(HardwareComponent):
     def connect(self):
         if self.debug_mode.val: self.log.debug( "connecting to" +  self.name)
         
-        # Open connection to hardware                        
+        # Open connection to hardware         
+        from .thorlabs_pm100d import ThorlabsPM100D               
         self.power_meter = ThorlabsPM100D(debug=self.settings['debug_mode'], port=self.settings['port'])
         
         #Connect lq

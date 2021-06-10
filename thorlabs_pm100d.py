@@ -64,7 +64,11 @@ class ThorlabsPM100D(object):
     def ask(self, cmd):
         if self.debug: logger.debug( "PM100D ask " + repr(cmd) )
         with self.lock:
-            resp = self.pm.ask(cmd)
+            try:
+                resp = self.pm.query(cmd) 
+            except:
+                resp = self.pm.ask(cmd) # Deprecated pyvisa method --> replaced by query()
+            
         if self.debug: logger.debug( "PM100D resp ---> " + repr(resp) )
         return resp
     

@@ -23,7 +23,7 @@ class ThorlabsPowerMeterHW(HardwareComponent):
         self.current = self.add_logged_quantity(name = 'current', dtype=float, unit="A", vmin=-1, vmax = 10, ro=True, si=True)
         
         
-        self.power_range = self.add_logged_quantity(name = 'power_range', dtype=float, unit="W", vmin=0, vmax=1e3, si=True)
+        self.power_range = self.settings.New(name = 'power_range', dtype=float, unit="W", vmin=0, vmax=1e3, si=True, spinbox_decimals=6)
         
         self.auto_range = self.add_logged_quantity(name = 'auto_range', dtype=bool, ro=False)
         
@@ -35,7 +35,11 @@ class ThorlabsPowerMeterHW(HardwareComponent):
         self.current_range = self.add_logged_quantity(name = "current_range", dtype=float, unit="A", si=True)
         
         self.port = self.add_logged_quantity('port', dtype=str, initial='USB0::0x1313::0x8078::P0005750::INSTR')
-               
+                      
+        self.settings.New('average_count', int, initial=1, vmax=3000, 
+                          description="""number of power acquisitions the power-meter controller averages over. 
+                                        Each acquisition takes approximately 3ms.""")
+        
         #operations
         self.add_operation("run_zero", self.run_zero)
         
@@ -68,6 +72,11 @@ class ThorlabsPowerMeterHW(HardwareComponent):
         self.photodiode_response.hardware_read_func = self.power_meter.get_photodiode_response
 
         self.current_range.hardware_read_func = self.power_meter.get_current_range
+        
+        self.settings.average_count.connect_to_hardware(
+            self.power_meter.get_average_count,
+            self.power_meter.set_average_count,
+            )
         
         self.read_from_hardware()
 

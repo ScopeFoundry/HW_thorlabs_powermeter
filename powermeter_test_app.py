@@ -14,8 +14,7 @@ class PowerMeterApp(BaseMicroscopeApp):
         self.add_hardware(ThorlabsPowerMeterHW(self))
         self.add_measurement(PowerMeterOptimizerMeasure(self))
 
-        
-        self.settings_load_ini('uv_defaults.ini')
+        #self.settings_load_ini('uv_defaults.ini')
 
 if __name__ == '__main__':
     import sys

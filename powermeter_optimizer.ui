@@ -14,28 +14,37 @@
    <string>Power Meter Optimizer</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout" stretch="0,1">
+   <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
     <item>
      <widget class="QGroupBox" name="control_groupBox">
       <property name="title">
        <string>Power Meter Optimizer Control</string>
       </property>
       <layout class="QGridLayout" name="gridLayout">
-       <item row="3" column="1">
-        <widget class="QPushButton" name="interrupt_pushButton">
+       <item row="2" column="3" rowspan="2" colspan="2">
+        <widget class="QLabel" name="power_readout_label">
+         <property name="font">
+          <font>
+           <pointsize>24</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
          <property name="text">
-          <string>Interrupt</string>
+          <string>Power Readout</string>
          </property>
         </widget>
        </item>
-       <item row="2" column="1">
-        <widget class="QPushButton" name="start_pushButton">
-         <property name="text">
-          <string>Start</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0" rowspan="2">
+       <item row="2" column="0" rowspan="2" colspan="2">
         <widget class="QDoubleSpinBox" name="power_readout_doubleSpinBox">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
@@ -66,17 +75,29 @@
        <item row="1" column="0">
         <widget class="QDoubleSpinBox" name="wavelength_doubleSpinBox"/>
        </item>
-       <item row="4" column="0">
-        <widget class="QLabel" name="power_readout_label">
-         <property name="font">
-          <font>
-           <pointsize>24</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
+       <item row="1" column="4">
+        <widget class="QPushButton" name="start_pushButton">
+         <property name="text">
+          <string>Start</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3">
+        <widget class="QPushButton" name="settings_pushButton">
+         <property name="maximumSize">
+          <size>
+           <width>50</width>
+           <height>16777215</height>
+          </size>
          </property>
          <property name="text">
-          <string>Power Readout</string>
+          <string>settings</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
@@ -84,11 +105,29 @@
      </widget>
     </item>
     <item>
-     <widget class="QGroupBox" name="plot_groupBox">
-      <property name="title">
-       <string>Plot</string>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout_2"/>
+     <widget class="QWidget" name="plot_widget" native="true">
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QWidget" name="settings_widget" native="true">
+      <layout class="QVBoxLayout" name="verticalLayout_3"/>
      </widget>
     </item>
    </layout>
@@ -106,5 +145,22 @@
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>settings_pushButton</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>settings_widget</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>765</x>
+     <y>74</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>786</x>
+     <y>403</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

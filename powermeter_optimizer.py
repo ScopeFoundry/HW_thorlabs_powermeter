@@ -36,36 +36,38 @@ class PowerMeterOptimizerMeasure(Measurement):
         # hardware
         self.powermeter = self.app.hardware['thorlabs_powermeter']
 
-        #connect events
-        self.ui.start_pushButton.clicked.connect(self.start)
-        self.ui.interrupt_pushButton.clicked.connect(self.interrupt)
-
-        self.save_data.connect_bidir_to_widget(self.ui.save_data_checkBox)
-        
-        self.ui.power_readout_PGSpinBox = replace_widget_in_layout(self.ui.power_readout_doubleSpinBox,
-                                                                       pg.widgets.SpinBox.SpinBox())
-        self.powermeter.settings.power.connect_bidir_to_widget(self.ui.power_readout_PGSpinBox)
-        
-        self.powermeter.settings.power.connect_bidir_to_widget(self.ui.power_readout_label)
-        self.powermeter.settings.wavelength.connect_bidir_to_widget(self.ui.wavelength_doubleSpinBox)
         
         
     def setup_figure(self):
         self.optimize_ii = 0
+
+        #connect events
+        self.settings.activation.connect_to_pushButton(self.ui.start_pushButton)
+        self.save_data.connect_to_widget(self.ui.save_data_checkBox)
+        self.ui.power_readout_PGSpinBox = replace_widget_in_layout(self.ui.power_readout_doubleSpinBox,
+                                                                       pg.widgets.SpinBox.SpinBox())
+        self.powermeter.settings.power.connect_to_widget(self.ui.power_readout_PGSpinBox)        
+        self.powermeter.settings.power.connect_to_widget(self.ui.power_readout_label)
+        self.powermeter.settings.wavelength.connect_to_widget(self.ui.wavelength_doubleSpinBox)
         
-        # ui window
+        # ui plot
         if hasattr(self, 'graph_layout'):
             self.graph_layout.deleteLater() # see http://stackoverflow.com/questions/9899409/pyside-removing-a-widget-from-a-layout
             del self.graph_layout
         
         # graph_layout
         self.graph_layout=pg.GraphicsLayoutWidget(border=(100,100,100))
-        self.ui.plot_groupBox.layout().addWidget(self.graph_layout)
+        self.ui.plot_widget.layout().addWidget(self.graph_layout)
 
         # history plot
         self.plot = self.graph_layout.addPlot(title="Power Meter Optimizer")
         self.optimize_plot_line = self.plot.plot([0])        
-
+        self.plot.setLogMode(False, True)
+        
+        #self.hw_controls = self.app.hardware['thorlabs_powermeter'].settings.New_UI(style='scroll_form')
+        self.hw_controls = self.app.hardware['thorlabs_powermeter'].New_UI()
+        self.ui.settings_widget.layout().addWidget(self.hw_controls)
+        self.ui.settings_pushButton.setChecked(False) #hide first.
 
     def run(self):
         self.display_update_period = 0.02 #seconds

@@ -30,7 +30,7 @@ class PowerMeterOptimizerMeasure(Measurement):
         # create data array
         self.OPTIMIZE_HISTORY_LEN = 500
 
-        self.optimize_history = np.zeros(self.OPTIMIZE_HISTORY_LEN, dtype=np.float)        
+        self.optimize_history = np.zeros(self.OPTIMIZE_HISTORY_LEN, dtype=float)        
         self.optimize_ii = 0
 
         # hardware

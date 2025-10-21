@@ -1,9 +1,9 @@
 from __future__ import division, print_function
-import visa
+import pyvisa as visa
 import time
 import logging
 from threading import Lock
-from ScopeFoundry.logged_quantity import DummyLock
+from ScopeFoundry.helper_funcs import DummyLock
 
 TRIES_BEFORE_FAILURE = 10
 RETRY_SLEEP_TIME = 0.010  # in seconds
@@ -32,7 +32,7 @@ class ThorlabsPM100D(object):
     
         if debug: self.visa_resource_manager.list_resources()
     
-        self.pm = self.visa_resource_manager.get_instrument(port)
+        self.pm = self.visa_resource_manager.open_resource(port)
         self.pm.timeout = 1000
     
         self.idn = self.ask("*IDN?")
